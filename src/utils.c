@@ -5,6 +5,18 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+float vertices[] = {
+    -0.5f,
+    -0.5f,
+    0.0f,
+    0.5f,
+    -0.5f,
+    0.0f,
+    0.0f,
+    0.5f,
+    0.0f,
+};
+
 GLFWwindow *GetWindow()
 {
     GLFWwindow *window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
@@ -23,16 +35,16 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 
 void run(GLFWwindow *window)
 {
+    unsigned int VAO = setup_vertex_array_object();
+    unsigned int shaderProgram = setup_shader();
+
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        
-        copy_data_to_gpu();
-        setup_shader();
-        
+        loop(VAO, shaderProgram);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -46,24 +58,29 @@ void processInput(GLFWwindow *window)
     }
 }
 
-void copy_data_to_gpu()
+unsigned int setup_vbo_and_cp_data(void *vertices, size_t size)
 {
-    float vertices[] = {
-        -0.5f,
-        -0.5f,
-        0.0f,
-        0.5f,
-        -0.5f,
-        0.0f,
-        0.0f,
-        0.5f,
-        0.0f,
-    };
     unsigned int VBO;
 
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
+
+    return VBO;
+}
+
+unsigned int setup_vertex_array_object()
+{
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    setup_vbo_and_cp_data(vertices, sizeof(vertices));
+
+    return VAO;
 }
 
 unsigned int setup_shader()
@@ -129,4 +146,12 @@ unsigned int setup_shader()
     glDeleteShader(fragmentShader);
 
     return shaderProgram;
+}
+
+void loop(unsigned int VAO, unsigned int shaderProgram)
+{
+    printf("LP\n");
+
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
 }
