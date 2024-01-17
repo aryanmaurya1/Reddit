@@ -18,4 +18,4 @@ unsigned int setup_vertex_array_object();
 
 unsigned int setup_shader();
 
-void loop();
+void draw_triangle(unsigned int, unsigned int);

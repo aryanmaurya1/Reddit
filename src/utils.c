@@ -45,7 +45,7 @@ void run(GLFWwindow *window)
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        loop(VAO, shaderProgram);
+        draw_triangle(VAO, shaderProgram);
         
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -150,10 +150,11 @@ unsigned int setup_shader()
     return shaderProgram;
 }
 
-void loop(unsigned int VAO, unsigned int shaderProgram)
+void draw_triangle(unsigned int VAO, unsigned int shaderProgram)
 {
     printf("LP\n");
 
     glUseProgram(shaderProgram);
     glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 }
