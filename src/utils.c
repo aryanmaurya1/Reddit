@@ -51,6 +51,8 @@ void run(GLFWwindow *window)
     unsigned int VAO = setup_vertex_array_object(ebo);
     unsigned int shaderProgram = setup_shader();
 
+    set_wireframe_mode_on();
+
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -179,6 +181,11 @@ unsigned int setup_shader()
     glDeleteShader(fragmentShader);
 
     return shaderProgram;
+}
+
+void set_wireframe_mode_on()
+{
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void draw_triangle(unsigned int VAO, unsigned int shaderProgram, enum buffer_type btype)

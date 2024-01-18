@@ -26,4 +26,6 @@ unsigned int setup_vertex_array_object(enum buffer_type btype);
 
 unsigned int setup_shader();
 
-void draw_triangle(unsigned int, unsigned int, enum buffer_type btype);
+void draw_triangle(unsigned int VAO, unsigned int shaderProgram, enum buffer_type btype);
+
+void set_wireframe_mode_on();
