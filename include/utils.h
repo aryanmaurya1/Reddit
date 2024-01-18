@@ -4,6 +4,12 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+enum buffer_type
+{
+    vbo,
+    ebo
+};
+
 GLFWwindow *GetWindow();
 
 void run(GLFWwindow *window);
@@ -14,8 +20,10 @@ void processInput(GLFWwindow *window);
 
 unsigned int setup_vbo_and_cp_data(void *, size_t size);
 
-unsigned int setup_vertex_array_object();
+unsigned int setup_ebo_and_cp_data(void *vertices, size_t size, void *indices, size_t isize);
+
+unsigned int setup_vertex_array_object(enum buffer_type btype);
 
 unsigned int setup_shader();
 
-void draw_triangle(unsigned int, unsigned int);
+void draw_triangle(unsigned int, unsigned int, enum buffer_type btype);

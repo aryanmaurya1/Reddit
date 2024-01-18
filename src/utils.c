@@ -17,6 +17,19 @@ float vertices[] = {
     0.0f,
 };
 
+float ebo_vertices[] = {
+    0.5f, 0.5f, 0.0f,   // top right
+    0.5f, -0.5f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f, // bottom left
+    -0.5f, 0.5f, 0.0f   // top left
+};
+
+unsigned int ebo_indices[] = {
+    // note that we start from 0!
+    0, 1, 3, // first triangle
+    1, 2, 3  // second triangle
+};
+
 GLFWwindow *GetWindow()
 {
     GLFWwindow *window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
@@ -35,7 +48,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 
 void run(GLFWwindow *window)
 {
-    unsigned int VAO = setup_vertex_array_object();
+    unsigned int VAO = setup_vertex_array_object(ebo);
     unsigned int shaderProgram = setup_shader();
 
     while (!glfwWindowShouldClose(window))
@@ -45,8 +58,8 @@ void run(GLFWwindow *window)
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        draw_triangle(VAO, shaderProgram);
-        
+        draw_triangle(VAO, shaderProgram, vbo);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -74,13 +87,31 @@ unsigned int setup_vbo_and_cp_data(void *vertices, size_t size)
     return VBO;
 }
 
-unsigned int setup_vertex_array_object()
+unsigned int setup_ebo_and_cp_data(void *vertices, size_t size, void *indices, size_t isize)
+{
+    setup_vbo_and_cp_data(vertices, size);
+
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, isize, indices, GL_STATIC_DRAW);
+}
+
+unsigned int setup_vertex_array_object(enum buffer_type btype)
 {
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-    setup_vbo_and_cp_data(vertices, sizeof(vertices));
+    if (btype == vbo)
+    {
+        setup_vbo_and_cp_data(vertices, sizeof(vertices));
+    }
+    else if (btype == ebo)
+    {
+        setup_ebo_and_cp_data(ebo_vertices, sizeof(ebo_vertices), ebo_indices, sizeof(ebo_indices));
+    }
 
     return VAO;
 }
@@ -150,11 +181,19 @@ unsigned int setup_shader()
     return shaderProgram;
 }
 
-void draw_triangle(unsigned int VAO, unsigned int shaderProgram)
+void draw_triangle(unsigned int VAO, unsigned int shaderProgram, enum buffer_type btype)
 {
     printf("LP\n");
 
     glUseProgram(shaderProgram);
     glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    if (btype == vbo)
+    {
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+    }
+    else if (btype == ebo)
+    {
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    }
 }
