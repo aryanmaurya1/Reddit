@@ -135,12 +135,13 @@ unsigned int setup_shader()
 
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
 
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if (!success)
     {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
         printf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n,%s", infoLog);
+        return 0;
     }
 
     const char *fragmentShaderSource = "#version 330 core\n"
@@ -154,12 +155,13 @@ unsigned int setup_shader()
 
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
 
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success)
     {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
         printf("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n,%s", infoLog);
+        return 0;
     }
 
     unsigned int shaderProgram;
@@ -174,6 +176,7 @@ unsigned int setup_shader()
     {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         printf("ERROR::SHADER::LINKING_FAILED\n,%s", infoLog);
+        return 0;
     }
     glUseProgram(shaderProgram);
 
