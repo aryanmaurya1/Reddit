@@ -190,8 +190,6 @@ void set_wireframe_mode_on()
 
 void draw_triangle(unsigned int VAO, unsigned int shaderProgram, enum buffer_type btype)
 {
-    printf("LP\n");
-
     glUseProgram(shaderProgram);
     glBindVertexArray(VAO);
 

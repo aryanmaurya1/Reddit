@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-
-
 int main()
 {
     glfwInit();
@@ -37,4 +35,3 @@ int main()
     glfwTerminate();
     return 0;
 }
-
