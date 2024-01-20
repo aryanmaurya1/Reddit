@@ -1,3 +1,3 @@
 # Learn OpenGL
 
-Resource Link : https://learnopengl.com/
+Resource Link : <https://learnopengl.com/>

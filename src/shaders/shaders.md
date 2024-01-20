@@ -59,7 +59,7 @@ vec4 otherResult = vec4(result.xyz, 1.0);
 
 - Vertex shader should receive some form of input otherwise it would be pretty ineffective.
 - Fragment shader requires a vec4 color output variable, since the fragment shaders needs to generate a final output color.
-- If we want to send data from one shader to the other we’d have to declare an output in the sending shader and a similar input in the receiving shader. 
+- If we want to send data from one shader to the other we’d have to declare an output in the sending shader and a similar input in the receiving shader.
 - When the types and the names are equal on both sides OpenGL will link those variables together and then it is possible to send data between
 shaders.
 
@@ -88,7 +88,7 @@ void main()
 - Uniforms are global. Global, meaning that a uniform variable is unique per shader program object, and can be accessed from any shader at any stage in the shader program.
 - whatever you set the uniform value to, uniforms will keep their values until they’re either reset or updated.
 
-```
+```glsl
 #version 330 core
 out vec4 FragColor;
 uniform vec4 ourColor; // we set this variable in the OpenGL code.
