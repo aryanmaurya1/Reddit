@@ -29,3 +29,5 @@ unsigned int setup_shader();
 void draw_triangle(unsigned int VAO, unsigned int shaderProgram, enum buffer_type btype);
 
 void set_wireframe_mode_on();
+
+unsigned int set_dynamic_color_shader();

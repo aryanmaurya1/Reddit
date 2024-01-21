@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <math.h>
 
 float vertices[] = {
     -0.5f,
@@ -164,11 +165,15 @@ unsigned int setup_shader()
         return 0;
     }
 
+    unsigned int dynamicColorShaderId = set_dynamic_color_shader();
+
     unsigned int shaderProgram;
     shaderProgram = glCreateProgram();
 
     glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
+    glAttachShader(shaderProgram, dynamicColorShaderId);
+    // glAttachShader(shaderProgram, fragmentShader);
+
     glLinkProgram(shaderProgram);
 
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
@@ -196,6 +201,11 @@ void draw_triangle(unsigned int VAO, unsigned int shaderProgram, enum buffer_typ
     glUseProgram(shaderProgram);
     glBindVertexArray(VAO);
 
+    float timeValue = glfwGetTime();
+    float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+    int uniformLocation = glGetUniformLocation(shaderProgram, "dynamicColor");
+    glUniform4f(uniformLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
     if (btype == vbo)
     {
         glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -204,4 +214,34 @@ void draw_triangle(unsigned int VAO, unsigned int shaderProgram, enum buffer_typ
     {
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }
+}
+
+unsigned int set_dynamic_color_shader()
+{
+    int success;
+    char infoLog[520];
+
+    const char *shaderSource = "#version 330 core\n \
+    out vec4 FragColor;\n \
+    uniform vec4 dynamicColor; // we set this variable in the OpenGL code.\n \
+    void main()\n \
+    { \
+        FragColor = dynamicColor;\n \
+    }\n \
+    ";
+
+    unsigned int dynamicColorShaderId;
+    dynamicColorShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+
+    glShaderSource(dynamicColorShaderId, 1, &shaderSource, NULL);
+    glCompileShader(dynamicColorShaderId);
+
+    glGetShaderiv(dynamicColorShaderId, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(dynamicColorShaderId, 512, NULL, infoLog);
+        printf("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n,%s", infoLog);
+        return 0;
+    }
+    return dynamicColorShaderId;
 }
